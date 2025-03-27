@@ -1,0 +1,1693 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thông tin Khen thưởng</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <style>
+        .avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin: 0 auto;
+            display: block;
+        }
+        .unit-logo {
+            width: 60px;
+            height: 60px;
+            object-fit: contain;
+            margin: 0 auto;
+            display: block;
+        }
+        .card-height {
+            height: 180px;
+        }
+        .info-card {
+            height: 100%;
+        }
+        .highlight-unit {
+            border-left: 3px solid #0d6efd;
+        }
+        .carousel-control-prev, .carousel-control-next {
+            background-color: rgba(0,0,0,0.2);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        .topic-card .card-img-top {
+            width: 100%;
+            /* height: 100px; */
+            object-fit: cover;
+            border-bottom: 1px solid rgba(0,0,0,0.125);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .topic-card:hover {
+            transform: translateY(-5px); /* Nâng thẻ lên một chút */
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2); /* Tạo hiệu ứng đổ bóng */
+            cursor: pointer;
+        }
+        .topic-card .card-body {
+            padding: 0.75rem;
+            text-align: center;
+        }
+        .topic-card .card-title {
+            font-size: 0.9rem;
+            margin-bottom: 0.3rem;
+        }
+        .topic-card .card-text {
+            font-size: 0.8rem;
+            color: #6c757d;
+        }
+        .chart-container {
+            position: relative;
+            height: 400px;
+            margin-top: 20px;
+        }
+        .filter-section {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        
+        @media (max-width: 768px) {
+            .responsive-stack {
+                flex-direction: column;
+            }
+            .responsive-stack > div {
+                width: 100% !important;
+                margin-bottom: 20px;
+            }
+            .topic-card .card-img-top {
+                height: 80px;
+            }
+            .chart-container {
+                height: 300px;
+            }
+        }
+
+        /* Thêm style mới cho carousel cá nhân */
+        .personal-carousel {
+            margin-top: 30px;
+            padding: 20px 0;
+        }
+        .personal-carousel .card {
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            height: 100%;
+            margin: 0 10px;
+        }
+        .personal-carousel .card-img-top {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin: 15px auto 0;
+        }
+        .personal-carousel .card-body {
+            text-align: center;
+            padding: 15px;
+        }
+        .personal-carousel .card-title {
+            font-weight: bold;
+            margin: 10px 0 5px;
+        }
+        .personal-carousel .card-subtitle {
+            color: #6c757d;
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+        }
+        .personal-carousel .card-text {
+            font-size: 0.85rem;
+            color: #495057;
+        }
+        .personal-carousel .carousel-control-prev,
+        .personal-carousel .carousel-control-next {
+            width: 40px;
+            height: 40px;
+            background-color: rgba(0, 0, 0, 0.2);
+            border-radius: 50%;
+            top: 50%;
+            transform: translateY(-50%);
+            opacity: 1;
+        }
+        .personal-carousel .carousel-control-prev {
+            left: -20px;
+        }
+        .personal-carousel .carousel-control-next {
+            right: -20px;
+        }
+
+         /* Thêm style mới cho vùng thống kê tổng hợp */
+         .summary-statistics {
+            margin-top: 30px;
+        }
+        .statistics-filter {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .statistics-chart-container {
+            position: relative;
+            height: 500px; /* Tăng chiều cao để hiển thị rõ hơn */
+            margin-top: 20px;
+        }
+        @media (max-width: 768px) {
+            .statistics-chart-container {
+                height: 400px;
+            }
+        }
+        /* Thêm style mới cho header */
+        .site-header {
+            /* background-color: #ffffff; */
+            padding: 15px 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: sticky ; /* Thay đổi từ sticky sang static */
+            top: 0;
+            z-index: 1000;
+            width: 100%;
+            background: linear-gradient(180deg, #0579DA 0%, #00579F 44.27%);
+        }
+        .navbar-brand {
+            color: white;
+            font-weight: bold;
+            font-size: 1.5rem;
+        }
+        .navbar-brand:hover {
+            color: #18bc9c;
+        }
+        .nav-link {
+            color: #f8f9fa;
+            font-weight: 500;
+            margin: 0 10px;
+            padding: 5px 15px;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+        .nav-link:hover, .nav-link:focus {
+            color: #f8f9fa;
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        .nav-link.active {
+            color: #00529C;
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+        .navbar-toggler {
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+        .navbar-toggler-icon {
+            background-image: url("data:image/svg+xml,%3csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3e%3cpath stroke='rgba(255, 255, 255, 0.5)' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+        }
+        
+        /* Thêm padding để tránh bị header che khuất nội dung */
+        body {
+            padding-top: 0; /* Bỏ padding-top vì header không còn fixed */
+        }
+        @media (max-width: 768px) {
+            body {
+                padding-top: 60px;
+            }
+        }
+         /* Thêm style mới cho logo */
+         .navbar-brand {
+            padding: 0;
+        }
+        .header-logo {
+            height: 40px; /* Chiều cao logo */
+            width: auto;
+            transition: all 0.3s ease;
+        }
+        .header-logo:hover {
+            opacity: 0.8;
+        }
+        
+        /* Điều chỉnh cho mobile */
+        @media (max-width: 768px) {
+            .header-logo {
+                height: 35px;
+            }
+        }
+
+        /* Thêm style mới cho vùng liên hệ */
+        .contact-section {
+            margin-top: 30px;
+            margin-bottom: 50px;
+        }
+        .contact-card {
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border-left: 5px solid #2c3e50;
+        }
+        .contact-title {
+            color: #2c3e50;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        .contact-info {
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
+        .contact-info i {
+            width: 25px;
+            color: #2c3e50;
+            margin-right: 10px;
+        }
+        /* Thêm style mới cho footer */
+        .site-footer {
+            /* background-color: #2c3e50; */
+            color: white;
+            padding: 30px 0;
+            margin-top: 50px;
+            background: linear-gradient(180deg, #0579DA 0%, #00579F 44.27%);
+        }
+        .footer-logo {
+            height: 40px;
+            width: auto;
+        }
+        .footer-content {
+            text-align: center;
+            margin: 15px 0;
+            font-size: 0.9rem;
+        }
+        .back-to-top {
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: right;
+        }
+        .back-to-top:hover {
+            color: #18bc9c;
+            transform: translateY(-3px);
+        }
+        .footer-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        @media (max-width: 768px) {
+            .footer-container {
+                flex-direction: column;
+                text-align: center;
+            }
+            .footer-logo-container, .back-to-top {
+                margin-bottom: 15px;
+            }
+            .back-to-top {
+                text-align: center;
+            }
+        }
+
+         /* Style mới cho tab */
+         .info-tabs .nav-tabs {
+            border-bottom: 2px solid #dee2e6;
+        }
+        .info-tabs .nav-link {
+            border: none;
+            color: #495057;
+            font-weight: 500;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0;
+            margin-right: 5px;
+        }
+        .info-tabs .nav-link:hover {
+            border-color: transparent;
+            color: #0d6efd;
+            background-color: #f8f9fa;
+        }
+        .info-tabs .nav-link.active {
+            color: #0d6efd;
+            background-color: transparent;
+            border-bottom: 3px solid #0d6efd;
+            font-weight: 600;
+        }
+        .info-tabs .tab-content {
+            padding: 1.5rem 0;
+        }
+
+        .summary-card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .summary-card:hover {
+            transform: translateY(-5px); /* Nâng thẻ lên một chút */
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2); /* Tạo hiệu ứng đổ bóng */
+        }
+
+        table thead tr th {
+            background-color: #00579F !important;
+        }
+
+        /* Hiệu ứng khi hover vào thẻ */
+    .profile-card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        border-radius: 10px;
+        overflow: hidden;
+    }
+
+    .profile-card:hover {
+        transform: translateY(-5px); /* Nâng lên khi hover */
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Đổ bóng nhẹ */
+    }
+
+    /* Hiệu ứng ảnh khi hover */
+    .avatar-img {
+        transition: transform 0.3s ease;
+        border-radius: 50%;
+        width: 120px; /* Kích thước cố định */
+        height: 120px;
+        object-fit: cover; /* Giữ ảnh không bị méo */
+        display: block;
+        margin: 10px auto;
+    }
+
+    .profile-card:hover .avatar-img {
+        transform: scale(1.1); /* Phóng to nhẹ */
+    }
+
+    /* Thêm hiệu ứng nhấn (click) */
+    .profile-card:active {
+        transform: scale(0.95);
+    }
+
+    /* Căn chỉnh văn bản */
+    .profile-card .card-body {
+        text-align: center;
+    }
+
+    </style>
+</head>
+<body>
+    <header class="site-header">
+        <nav class="navbar navbar-expand-lg navbar-dark container">
+            <a class="navbar-brand" href="#">
+                <img src="./images/Logo-Gang-thep-Trang.png" alt="Hệ thống khen thưởng" class="header-logo">
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#tong-quan">TỔNG QUAN</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#thanh-tich-tap-the">TẬP THỂ</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#thanh-tich-ca-nhan">CÁ NHÂN</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#thong-ke-tong-hop">THỐNG KÊ</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#lien-he">LIÊN HỆ</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+    <div id="home"></div>
+    <div class="container-fluid py-3">
+        <!-- Các phần trước giữ nguyên -->
+        <div class="row responsive-stack" id="tong-quan">
+            <!-- Vùng 1: Thông tin Tuần/Tháng -->
+            <div class="col-md-3">
+                <div class="card info-card info-tabs">
+                    <!-- <div class="card-header bg-primary text-white">
+                        Thông tin Tuần/Tháng
+                    </div> -->
+                    <h2 class="card-header">Thông tin tuần/tháng</h2>
+                    <div class="card-body">
+                        <ul class="nav nav-tabs" id="timeTab" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link active" id="week-tab" data-bs-toggle="tab" data-bs-target="#week" type="button" role="tab" aria-controls="week" aria-selected="true">
+                                    <i class="fas fa-calendar-week me-2"></i>Tuần
+                                </button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="month-tab" data-bs-toggle="tab" data-bs-target="#month" type="button" role="tab" aria-controls="month" aria-selected="false">
+                                    <i class="fas fa-calendar-alt me-2"></i>Tháng
+                                </button>
+                            </li>
+                        </ul>
+                        <div class="tab-content" id="timeTabContent">
+                            <div class="tab-pane fade show active" id="week" role="tabpanel" aria-labelledby="week-tab">
+                                <div class="mb-2"><i class="fa-solid fa-list-check" style="color: #3498db;"></i><strong> Tổng đề tài:</strong> 12</div>
+                                <div class="mb-2"><i class="fa-solid fa-user-check" style="color: #27ae60;"></i><strong>Cá nhân được thưởng:</strong> 8</div>
+                                <div class="mb-2"><i class="fa-solid fa-users" style="color: #f39c12;"></i><strong>Tập thể được thưởng:</strong> 4</div>
+                                <div class="mb-2"><i class="fa-solid fa-money-bill-wave" style="color: #e74c3c;"></i> <strong>Tổng tiền thưởng:</strong> 120.000.000đ</div>
+                            </div>
+                            <div class="tab-pane fade" id="month" role="tabpanel" aria-labelledby="month-tab">
+                                <div class="mb-2"><i class="fa-solid fa-list-check" style="color: #3498db;"></i><strong> Tổng đề tài:</strong> 45</div>
+                                <div class="mb-2"><i class="fa-solid fa-user-check" style="color: #27ae60;"></i><strong> Cá nhân được thưởng:</strong> 32</div>
+                                <div class="mb-2"><i class="fa-solid fa-users" style="color: #f39c12;"></i><strong> Tập thể được thưởng:</strong> 13</div>
+                                <div class="mb-2"><i class="fa-solid fa-money-bill-wave" style="color: #e74c3c;"></i><strong> Tổng tiền thưởng:</strong> 450.000.000đ</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Vùng 2: Danh sách tin và Đơn vị nổi bật -->
+            <div class="col-md-6">
+                <div class="card mb-3">
+                    <!-- <div class="card-header bg-success text-white">
+                        Đề tài nổi bật
+                    </div> -->
+                    <h2 class="card-header">Điểm tin</h2>
+                    <div class="card-body position-relative">
+                        <!-- Carousel 1 -->
+                        <div id="newsCarousel" class="carousel slide mb-4" data-bs-ride="carousel">
+                            <div class="carousel-inner">
+                                <div class="carousel-item active">
+                                    <div class="row">
+                                        <div class="col-3">
+                                            <div class="card topic-card h-100">
+                                                <img src="./images/dmst_03.jpg" class="card-img-top" alt="Đề tài A">
+                                                <div class="card-body">
+                                                    <h6 class="card-title">Đề tài A</h6>
+                                                    <p class="card-text">Nguyễn Văn A</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-3">
+                                            <div class="card topic-card h-100">
+                                                <img src="./images/dmst_01.jpg" class="card-img-top" alt="Đề tài B">
+                                                <div class="card-body">
+                                                    <h6 class="card-title">Đề tài B</h6>
+                                                    <p class="card-text">Trần Thị B</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-3">
+                                            <div class="card topic-card h-100">
+                                                <img src="./images/dmst_02.jpg" class="card-img-top" alt="Đề tài C">
+                                                <div class="card-body">
+                                                    <h6 class="card-title">Đề tài C</h6>
+                                                    <p class="card-text">Lê Văn C</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-3">
+                                            <div class="card topic-card h-100">
+                                                <img src="./images/dmst_11.jpg" class="card-img-top" alt="Đề tài D">
+                                                <div class="card-body">
+                                                    <h6 class="card-title">Đề tài D</h6>
+                                                    <p class="card-text">Phạm Thị D</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="carousel-item">
+                                    <div class="row">
+                                        <div class="col-3">
+                                            <div class="card topic-card h-100">
+                                                <img src="./images/dmst_05.jpg" class="card-img-top" alt="Đề tài E">
+                                                <div class="card-body">
+                                                    <h6 class="card-title">Đề tài E</h6>
+                                                    <p class="card-text">Hoàng Văn E</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-3">
+                                            <div class="card topic-card h-100">
+                                                <img src="./images/dmst_06.jpg" class="card-img-top" alt="Đề tài F">
+                                                <div class="card-body">
+                                                    <h6 class="card-title">Đề tài F</h6>
+                                                    <p class="card-text">Vũ Thị F</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-3">
+                                            <div class="card topic-card h-100">
+                                                <img src="./images/dmst_07.jpg" class="card-img-top" alt="Đề tài G">
+                                                <div class="card-body">
+                                                    <h6 class="card-title">Đề tài G</h6>
+                                                    <p class="card-text">Đặng Văn G</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-3">
+                                            <div class="card topic-card h-100">
+                                                <img src="./images/dmst_08.jpg" class="card-img-top" alt="Đề tài H">
+                                                <div class="card-body">
+                                                    <h6 class="card-title">Đề tài H</h6>
+                                                    <p class="card-text">Bùi Thị H</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <button class="carousel-control-prev" type="button" data-bs-target="#newsCarousel" data-bs-slide="prev">
+                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Previous</span>
+                            </button>
+                            <button class="carousel-control-next" type="button" data-bs-target="#newsCarousel" data-bs-slide="next">
+                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Next</span>
+                            </button>
+                        </div>
+
+                        <!-- Đơn vị nổi bật -->
+                        <div class="row mt-3">
+                            <div class="col-md-6">
+                                <div class="card highlight-unit">
+                                    <div class="card-body">
+                                        <h5 class="card-title text-center">Đơn vị nổi bật</h5>
+                                        <div class="text-center mt-3">
+                                            <img src="./images/NMCD3.png" class="unit-logo mb-2" alt="Logo">
+                                            <p class="mb-0">NM. CĐ3</p>
+                                            <!-- <h5 class="card-title">Số đề tài</h5> -->
+                                        <h2 class="text-primary">24 đề tài</h2>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- <div class="col-md-6">
+                                <div class="card">
+                                    <div class="card-body text-center">
+                                        <h5 class="card-title">Số đề tài</h5>
+                                        <h2 class="text-primary">24</h2>
+                                    </div>
+                                </div>
+                            </div> -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Vùng 3: Bảng xếp hạng -->
+            <div class="col-md-3">
+                <div class="card">
+                    <!-- <div class="card-header bg-info">
+                        Bảng xếp hạng
+                    </div> -->
+                    <h2 class="card-header">Top cá nhân nổi bật</h2>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-striped table-hover">
+                                <thead>
+                                    <tr>
+                                        <th style="color: white;">MNV</th>
+                                        <th style="color: white;">Tên</th>
+                                        <th style="color: white;">Đơn vị</th>
+                                        <th style="color: white;">Số đề tài</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="rankingBody">
+                                    <!-- Dữ liệu sẽ được thêm bằng JavaScript -->
+                                </tbody>
+                            </table>
+                        </div>
+                        <nav aria-label="Page navigation">
+                            <ul class="pagination pagination-sm justify-content-center" id="pagination">
+                                <!-- Phân trang sẽ được thêm bằng JavaScript -->
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="card mb-4">
+                    <!-- <div class="card-header bg-primary text-white">
+                        Tổng quan
+                    </div> -->
+                    <h2 class="card-header">Tổng quan</h2>
+                    <div class="card-body">
+                        <!-- Hàng 1: Các chỉ số chính -->
+                        <div class="row">
+                            <div class="col-md-2 col-6 mb-4">
+                                <div class="card summary-card text-center p-3">
+                                    <div class="summary-icon">
+                                        <i class="fas fa-book"></i>
+                                    </div>
+                                    <div class="summary-value text-primary"><h2>245</h2></div>
+                                    <!-- <div class="summary-label">Số lượng đề tài</div> -->
+                                    <p>Tổng số đề tài nghiên cứu đã được thực hiện trong năm 2025</p>
+                                </div>
+                            </div>
+                            <div class="col-md-2 col-6 mb-4">
+                                <div class="card summary-card text-center p-3">
+                                    <div class="summary-icon">
+                                        <i class="fas fa-chart-line"></i>
+                                    </div>
+                                    <div class="summary-value text-success"><h2>15.2 tỷ</h2></div>
+                                    <!-- <div class="summary-label">Giá trị làm lợi</div> -->
+                                    <p>Tổng giá trị kinh tế các đề tài mang lại cho đơn vị</p>
+                                </div>
+                            </div>
+                            <div class="col-md-2 col-6 mb-4">
+                                <div class="card summary-card text-center p-3">
+                                    <div class="summary-icon">
+                                        <i class="fas fa-award"></i>
+                                    </div>
+                                    <div class="summary-value text-warning"><h2>3.8 tỷ</h2></div>
+                                    <!-- <div class="summary-label">Tiền thưởng</div> -->
+                                    <p>Tổng số tiền thưởng đã chi trả cho các cá nhân/tập thể</p>
+                                </div>
+                            </div>
+                            <div class="col-md-2 col-6 mb-4">
+                                <div class="card summary-card text-center p-3">
+                                    <div class="summary-icon">
+                                        <i class="fas fa-user"></i>
+                                    </div>
+                                    <div class="summary-value text-info"><h2>128</h2></div>
+                                    <!-- <div class="summary-label">Số cá nhân</div> -->
+                                    <p>Số lượng cá nhân được khen thưởng trong năm 2025</p>
+                                </div>
+                            </div>
+                            <div class="col-md-2 col-6 mb-4">
+                                <div class="card summary-card text-center p-3">
+                                    <div class="summary-icon">
+                                        <i class="fas fa-users"></i>
+                                    </div>
+                                    <div class="summary-value text-danger"><h2>42</h2></div>
+                                    <!-- <div class="summary-label">Số tập thể</div> -->
+                                    <p>Số lượng tập thể được khen thưởng trong năm 2025</p>
+                                </div>
+                            </div>
+                            <div class="col-md-2 col-6 mb-4">
+                                <div class="card summary-card text-center p-3">
+                                    <div class="summary-icon">
+                                        <i class="fas fa-calendar-alt"></i>
+                                    </div>
+                                    <div class="summary-value text-secondary"><h2>2025</h2></div>
+                                    <!-- <div class="summary-label">Năm hiện tại</div> -->
+                                    <p>Các số liệu được thống kê tính đến năm 2025</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Hàng 2: Mô tả các chỉ số -->
+                        <!-- <div class="row mt-3">
+                            <div class="col-md-2 col-6 mb-3">
+                                <div class="summary-description">
+                                    <div class="summary-description-title">Số lượng đề tài</div>
+                                    <p>Tổng số đề tài nghiên cứu đã được thực hiện trong năm 2023</p>
+                                </div>
+                            </div>
+                            <div class="col-md-2 col-6 mb-3">
+                                <div class="summary-description">
+                                    <div class="summary-description-title">Giá trị làm lợi</div>
+                                    <p>Tổng giá trị kinh tế các đề tài mang lại cho đơn vị</p>
+                                </div>
+                            </div>
+                            <div class="col-md-2 col-6 mb-3">
+                                <div class="summary-description">
+                                    <div class="summary-description-title">Tiền thưởng</div>
+                                    <p>Tổng số tiền thưởng đã chi trả cho các cá nhân/tập thể</p>
+                                </div>
+                            </div>
+                            <div class="col-md-2 col-6 mb-3">
+                                <div class="summary-description">
+                                    <div class="summary-description-title">Số cá nhân</div>
+                                    <p>Số lượng cá nhân được khen thưởng trong năm 2023</p>
+                                </div>
+                            </div>
+                            <div class="col-md-2 col-6 mb-3">
+                                <div class="summary-description">
+                                    <div class="summary-description-title">Số tập thể</div>
+                                    <p>Số lượng tập thể được khen thưởng trong năm 2023</p>
+                                </div>
+                            </div>
+                            <div class="col-md-2 col-6 mb-3">
+                                <div class="summary-description">
+                                    <div class="summary-description-title">Năm hiện tại</div>
+                                    <p>Thống kê dữ liệu tính đến năm 2023</p>
+                                </div>
+                            </div>
+                        </div> -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Vùng mới: Bảng thành tích tập thể -->
+        <div class="row mt-4" id="thanh-tich-tap-the">
+            <div class="col-12">
+                <div class="card">
+                    <!-- <div class="card-header bg-info text-white">
+                        Bảng thành tích tập thể
+                    </div> -->
+                    <h2 class="card-header">Bảng thành tích tập thể</h2>
+                    <div class="card-body">
+                        <!-- Bộ lọc -->
+                        <div class="filter-section">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="unitFilter" class="form-label">Lọc theo đơn vị:</label>
+                                    <select class="form-select" id="unitFilter">
+                                        <option value="all">Tất cả đơn vị</option>
+                                        <option value="P. CNTT & CĐS">P. CNTT & CĐS</option>
+                                        <option value="NM. CĐ3">NM. CĐ3</option>
+                                        <option value="NM. CĐ1">NM. CĐ1</option>
+                                        <option value="NM. TKVV">NM. TKVV</option>
+                                        <option value="NM. HRC1">NM. HRC1</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="categoryFilter" class="form-label">Lọc theo hạng mục:</label>
+                                    <select class="form-select" id="categoryFilter">
+                                        <option value="all">Tất cả hạng mục</option>
+                                        <option value="Có Sáng tạo">Có Sáng tạo</option>
+                                        <option value="Đưa hạng mục vào hoạt động">Đưa hạng mục vào hoạt động</option>
+                                        <option value="Thành tích đạt được">Thành tích đạt được</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Biểu đồ -->
+                        <div class="chart-container">
+                            <canvas id="achievementChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-4 personal-achievement" id="thanh-tich-ca-nhan">
+            <div class="col-12">
+                <div class="card">
+                    <!-- <div class="card-header bg-danger text-white">
+                        Bảng thành tích Cá nhân
+                    </div> -->
+                    <h2 class="card-header">Bảng thành tích Cá nhân</h2>
+                    <div class="card-body">
+                        <!-- Bộ lọc -->
+                        <div class="filter-section">
+                            <div class="row">
+                                <div class="col-md-3 mb-3">
+                                    <label for="personalUnitFilter" class="form-label">Lọc theo đơn vị:</label>
+                                    <select class="form-select" id="personalUnitFilter">
+                                        <option value="all">Tất cả đơn vị</option>
+                                        <option value="P. CNTT & CĐS">P. CNTT & CĐS</option>
+                                        <option value="NM. CĐ3">NM. CĐ3</option>
+                                        <option value="NM. CĐ1">NM. CĐ1</option>
+                                        <option value="NM. TKVV">NM. TKVV</option>
+                                        <option value="NM. HRC1">NM. HRC1</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-3 mb-3">
+                                    <label for="achievementFilter" class="form-label">Lọc theo thành tích:</label>
+                                    <select class="form-select" id="achievementFilter">
+                                        <option value="all">Tất cả thành tích</option>
+                                        <option value="Thưởng đưa hạng mục vào hoạt động">Thưởng đưa hạng mục vào hoạt động</option>
+                                        <option value="Thành tích đạt được">Thành tích đạt được</option>
+                                        <option value="Có đổi mới sáng tạo">Có đổi mới sáng tạo</option>
+                                        <option value="Có đổi mới sáng tạo">Có đổi mới sáng tạo</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-3 mb-3">
+                                    <label for="yearFilter" class="form-label">Lọc theo năm:</label>
+                                    <select class="form-select" id="yearFilter">
+                                        <option value="all">Tất cả năm</option>
+                                        <option value="2023">2023</option>
+                                        <option value="2022">2022</option>
+                                        <option value="2021">2021</option>
+                                        <option value="2020">2020</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-3 mb-3">
+                                    <label for="searchInput" class="form-label">Tìm kiếm:</label>
+                                    <input type="text" class="form-control" id="searchInput" placeholder="Nhập tên hoặc vị trí...">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Bảng dữ liệu -->
+                        <div class="table-responsive">
+                            <table class="table table-striped table-hover">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th>STT</th>
+                                        <th>Họ và tên</th>
+                                        <th>Vị trí công việc</th>
+                                        <th>Đơn vị</th>
+                                        <th>Thành tích</th>
+                                        <th>Loại hình thưởng</th>
+                                        <th>Giá trị thưởng</th>
+                                        <th>Năm</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="personalAchievementBody">
+                                    <!-- Dữ liệu sẽ được thêm bằng JavaScript -->
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Phân trang -->
+                        <nav aria-label="Page navigation">
+                            <ul class="pagination justify-content-center" id="personalPagination">
+                                <!-- Phân trang sẽ được thêm bằng JavaScript -->
+                            </ul>
+                        </nav>
+                        <div class="personal-carousel">
+                            <!-- <h5 class="mb-4">Cá nhân tiêu biểu</h5> -->
+                            <div id="personalHighlightCarousel" class="carousel slide" data-bs-ride="carousel">
+                                <div class="carousel-inner">
+                                    <div class="carousel-item active">
+                                        <div class="row justify-content-center">
+                                            <div class="col-md-3">
+                                                <div class="card profile-card">
+                                                    <img src="./images/CNTT9730_1.jpg" class="card-img-top avatar-img" alt="Avatar">
+                                                    <div class="card-body">
+                                                        <h5 class="card-title">Phùng Văn Tuấn</h5>
+                                                        <h6 class="card-subtitle">Kỹ thuật viên CNTT</h6>
+                                                        <p class="card-text">Nghiên cứu phát triển hệ thống AI</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="card profile-card">
+                                                    <img src="./images/CNTT9730_1.jpg" class="card-img-top avatar-img" alt="Avatar">
+                                                    <div class="card-body">
+                                                        <h5 class="card-title">Nguyễn Võ Tuấn Nhân</h5>
+                                                        <h6 class="card-subtitle">Kỹ thuật viên CNTT</h6>
+                                                        <p class="card-text">Nghiên cứu phát triển hệ thống AI</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="card profile-card">
+                                                    <img src="./images/CNTT9730_1.jpg" class="card-img-top avatar-img" alt="Avatar">
+                                                    <div class="card-body">
+                                                        <h5 class="card-title">Nguyễn Vĩnh Phước</h5>
+                                                        <h6 class="card-subtitle">Kỹ thuật viên CNTT</h6>
+                                                        <p class="card-text">Phát triển hệ thống E-learning</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="carousel-item">
+                                        <div class="row justify-content-center">
+                                            <div class="col-md-3">
+                                                <div class="card profile-card">
+                                                    <img src="./images/CNTT9730_1.jpg" class="card-img-top avatar-img" alt="Avatar">
+                                                    <div class="card-body">
+                                                        <h5 class="card-title">Trần Văn D</h5>
+                                                        <h6 class="card-subtitle">Kỹ thuật viên điện</h6>
+                                                        <p class="card-text">Phát triển vật liệu mới ứng dụng trong xây dựng, tiết kiệm 30% chi phí so với vật liệu truyền thống.</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="card profile-card">
+                                                    <img src="./images/CNTT9730_1.jpg" class="card-img-top avatar-img" alt="Avatar">
+                                                    <div class="card-body">
+                                                        <h5 class="card-title">Hoàng Văn E</h5>
+                                                        <h6 class="card-subtitle">Kỹ thuật viên điện</h6>
+                                                        <p class="card-text">Phát triển vật liệu mới ứng dụng trong xây dựng, tiết kiệm 30% chi phí so với vật liệu truyền thống.</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="card profile-card">
+                                                    <img src="./images/CNTT9730_1.jpg" class="card-img-top avatar-img" alt="Avatar">
+                                                    <div class="card-body">
+                                                        <h5 class="card-title">Vũ Văn F</h5>
+                                                        <h6 class="card-subtitle">Kỹ thuật viên cơ khí</h6>
+                                                        <p class="card-text">Thiết kế hệ thống quản lý năng lượng thông minh, tiết kiệm 25% điện năng tiêu thụ.</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <button class="carousel-control-prev" type="button" data-bs-target="#personalHighlightCarousel" data-bs-slide="prev">
+                                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                    <span class="visually-hidden">Previous</span>
+                                </button>
+                                <button class="carousel-control-next" type="button" data-bs-target="#personalHighlightCarousel" data-bs-slide="next">
+                                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                    <span class="visually-hidden">Next</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row summary-statistics" id="thong-ke-tong-hop">
+            <div class="col-12">
+                <div class="card">
+                    <!-- <div class="card-header bg-secondary text-white">
+                        Thống kê tổng hợp
+                    </div> -->
+                    <h2 class="card-header">Thống kê tổng hợp</h2>
+                    <div class="card-body">
+                        <!-- Bộ lọc -->
+                        <div class="statistics-filter">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="statisticsCategory" class="form-label">Chọn hạng mục thống kê:</label>
+                                    <select class="form-select" id="statisticsCategory">
+                                        <option value="all">Tất cả hạng mục</option>
+                                        <option value="rewardAmount">Số tiền đã thưởng (triệu đồng)</option>
+                                        <option value="individualCount">Số cá nhân được thưởng</option>
+                                        <option value="teamCount">Số tập thể được thưởng</option>
+                                        <option value="contentCount">Số nội dung được khen thưởng</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="timePeriod" class="form-label">Chọn thời gian:</label>
+                                    <select class="form-select" id="timePeriod">
+                                        <option value="2023">Năm 2023</option>
+                                        <option value="2022">Năm 2022</option>
+                                        <option value="2021">Năm 2021</option>
+                                        <option value="all">Tất cả năm</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Biểu đồ -->
+                        <div class="statistics-chart-container">
+                            <canvas id="summaryStatisticsChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Vùng mới: Phản hồi/Liên hệ -->
+    <div class="row contact-section" id="lien-he">
+        <div class="col-12">
+            <div class="card contact-card">
+                <div class="card-body">
+                    <h4 class="contact-title">Phản hồi/Liên hệ</h4>
+                    <div class="contact-info">
+                        <p><i class="fas fa-info-circle"></i> Mọi thông tin phản hồi xin liên hệ:</p>
+                        <p><i class="fas fa-phone"></i> Điện thoại: 02553.620.630</p>
+                        <p><i class="fas fa-envelope"></i> Email: <a href="mailto:tuyendungdungquat@hoaphat.com.vn">tuyendungdungquat@hoaphat.com.vn</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Dữ liệu bảng xếp hạng
+        const rankingData = [
+            { id: 1, name: "Nguyễn Văn A", unit: "P. CNTT & CĐS", topics: 12 },
+            { id: 2, name: "Trần Thị B", unit: "P. CNTT & CĐS", topics: 10 },
+            { id: 3, name: "Lê Văn C", unit: "P. CNTT & CĐS", topics: 8 },
+            { id: 4, name: "Phạm Thị D", unit: "P. CNTT & CĐS", topics: 7 },
+            { id: 5, name: "Hoàng Văn E", unit: "P. CNTT & CĐS", topics: 6 },
+            { id: 6, name: "Vũ Thị F", unit: "P. CNTT & CĐS", topics: 5 },
+            { id: 7, name: "Đặng Văn G", unit: "P. CNTT & CĐS", topics: 4 },
+            { id: 8, name: "Bùi Thị H", unit: "P. CNTT & CĐS", topics: 3 },
+            { id: 9, name: "Nguyễn Thị I", unit: "P. CNTT & CĐS", topics: 3 },
+            { id: 10, name: "Trần Văn K", unit: "P. CNTT & CĐS", topics: 2 }
+        ];
+
+        // Dữ liệu thành tích tập thể
+        const achievementData = {
+            units: ["P. CNTT & CĐS", "NM. CĐ3", "NM. CĐ1", "NM. TKVV", "NM. HRC1"],
+            categories: ["Có Sáng tạo", "Đưa hạng mục vào hoạt động", "Thành tích đạt được"],
+            data: [
+                // P. CNTT & CĐS
+                { unit: "P. CNTT & CĐS", category: "Có Sáng tạo", value: 15 },
+                { unit: "P. CNTT & CĐS", category: "Đưa hạng mục vào hoạt động", value: 10 },
+                { unit: "P. CNTT & CĐS", category: "Thành tích đạt được", value: 20 },
+                // NM. CĐ3
+                { unit: "NM. CĐ3", category: "Có Sáng tạo", value: 12 },
+                { unit: "NM. CĐ3", category: "Đưa hạng mục vào hoạt động", value: 8 },
+                { unit: "NM. CĐ3", category: "Thành tích đạt được", value: 15 },
+                // NM. CĐ1
+                { unit: "NM. CĐ1", category: "Có Sáng tạo", value: 8 },
+                { unit: "NM. CĐ1", category: "Đưa hạng mục vào hoạt động", value: 6 },
+                { unit: "NM. CĐ1", category: "Thành tích đạt được", value: 10 },
+                // NM. TKVV
+                { unit: "NM. TKVV", category: "Có Sáng tạo", value: 5 },
+                { unit: "NM. TKVV", category: "Đưa hạng mục vào hoạt động", value: 4 },
+                { unit: "NM. TKVV", category: "Thành tích đạt được", value: 7 },
+                // NM. HRC1
+                { unit: "NM. HRC1", category: "Có Sáng tạo", value: 7 },
+                { unit: "NM. HRC1", category: "Đưa hạng mục vào hoạt động", value: 5 },
+                { unit: "NM. HRC1", category: "Thành tích đạt được", value: 9 }
+            ]
+        };
+
+        // Cấu hình phân trang
+        const itemsPerPage = 5;
+        let currentPage = 1;
+
+        // Cấu hình phân trang cá nhân
+        const personalItemsPerPage = 10;
+        let personalCurrentPage = 1;
+
+        // Biến cho biểu đồ
+        let achievementChart;
+
+        // Hiển thị dữ liệu bảng xếp hạng
+        function displayRankingData(page) {
+            const startIndex = (page - 1) * itemsPerPage;
+            const endIndex = startIndex + itemsPerPage;
+            const paginatedData = rankingData.slice(startIndex, endIndex);
+
+            const tbody = document.getElementById('rankingBody');
+            tbody.innerHTML = '';
+
+            paginatedData.forEach((item, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${startIndex + index + 1}</td>
+                    <td>${item.name}</td>
+                    <td>${item.unit}</td>
+                    <td>${item.topics}</td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        // Tạo phân trang
+        function setupPagination() {
+            const totalPages = Math.ceil(rankingData.length / itemsPerPage);
+            const pagination = document.getElementById('pagination');
+            pagination.innerHTML = '';
+
+            // Nút Previous
+            const prevLi = document.createElement('li');
+            prevLi.className = `page-item ${currentPage === 1 ? 'disabled' : ''}`;
+            prevLi.innerHTML = `<a class="page-link" href="#" tabindex="-1">Trước</a>`;
+            prevLi.addEventListener('click', (e) => {
+                e.preventDefault();
+                if (currentPage > 1) {
+                    currentPage--;
+                    displayRankingData(currentPage);
+                    setupPagination();
+                }
+            });
+            pagination.appendChild(prevLi);
+
+            // Các nút trang
+            for (let i = 1; i <= totalPages; i++) {
+                const li = document.createElement('li');
+                li.className = `page-item ${i === currentPage ? 'active' : ''}`;
+                li.innerHTML = `<a class="page-link" href="#">${i}</a>`;
+                li.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    currentPage = i;
+                    displayRankingData(currentPage);
+                    setupPagination();
+                });
+                pagination.appendChild(li);
+            }
+
+            // Nút Next
+            const nextLi = document.createElement('li');
+            nextLi.className = `page-item ${currentPage === totalPages ? 'disabled' : ''}`;
+            nextLi.innerHTML = `<a class="page-link" href="#">Sau</a>`;
+            nextLi.addEventListener('click', (e) => {
+                e.preventDefault();
+                if (currentPage < totalPages) {
+                    currentPage++;
+                    displayRankingData(currentPage);
+                    setupPagination();
+                }
+            });
+            pagination.appendChild(nextLi);
+        }
+
+        // Khởi tạo biểu đồ
+        function initChart(unitFilter = 'all', categoryFilter = 'all') {
+            const ctx = document.getElementById('achievementChart').getContext('2d');
+            
+            // Lọc dữ liệu theo bộ lọc
+            let filteredData = achievementData.data;
+            
+            if (unitFilter !== 'all') {
+                filteredData = filteredData.filter(item => item.unit === unitFilter);
+            }
+            
+            if (categoryFilter !== 'all') {
+                filteredData = filteredData.filter(item => item.category === categoryFilter);
+            }
+            
+            // Chuẩn bị dữ liệu cho biểu đồ
+            const labels = [...new Set(filteredData.map(item => item.unit))];
+            const categories = [...new Set(filteredData.map(item => item.category))];
+            
+            const datasets = categories.map(category => {
+                let backgroundColor;
+                
+                switch (category) {
+                    case "Đưa hạng mục vào hoạt động":
+                        backgroundColor = "#B9FBC0";
+                        break;
+                    case "Thành tích đạt được":
+                        backgroundColor = "#FFB6C1";
+                        break;
+                    case "Có Sáng tạo":
+                        backgroundColor = "#42A5F5";
+                        break;
+                    default:
+                        backgroundColor = getRandomColor(); // Màu ngẫu nhiên cho các category khác
+                }
+
+                return {
+                    label: category,
+                    data: labels.map(unit => {
+                        const item = filteredData.find(d => d.unit === unit && d.category === category);
+                        // console.log(category);
+                        return item ? item.value : 0;
+                    }),
+                    backgroundColor: backgroundColor
+                };
+            });
+
+            
+            // Nếu chỉ có 1 hạng mục, hiển thị dạng đơn giản
+            if (categoryFilter !== 'all' || datasets.length === 1) {
+                datasets[0].backgroundColor = '#4e73df';
+                if (categoryFilter !== 'all') {
+                    datasets[0].label = categoryFilter;
+                }
+            }
+            
+            // Hủy biểu đồ cũ nếu tồn tại
+            if (achievementChart) {
+                achievementChart.destroy();
+            }
+            
+            // Tạo biểu đồ mới
+            achievementChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: datasets
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Số đề tài'
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Đơn vị'
+                            }
+                        }
+                    },
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Thống kê số đề tài theo đơn vị và hạng mục'
+                        },
+                        legend: {
+                            position: 'top'
+                        }
+                    }
+                }
+            });
+        }
+        
+        // Hàm tạo màu ngẫu nhiên
+        function getRandomColor() {
+            const letters = '0123456789ABCDEF';
+            let color = '#';
+            for (let i = 0; i < 6; i++) {
+                color += letters[Math.floor(Math.random() * 16)];
+            }
+            console.log('wewe')
+            return color;
+        }
+
+        // Xử lý sự kiện thay đổi bộ lọc
+        document.getElementById('unitFilter').addEventListener('change', function() {
+            const unitFilter = this.value;
+            const categoryFilter = document.getElementById('categoryFilter').value;
+            initChart(unitFilter, categoryFilter);
+        });
+        
+        document.getElementById('categoryFilter').addEventListener('change', function() {
+            const categoryFilter = this.value;
+            const unitFilter = document.getElementById('unitFilter').value;
+            initChart(unitFilter, categoryFilter);
+        });
+
+        // Khởi tạo
+        document.addEventListener('DOMContentLoaded', () => {
+            displayRankingData(currentPage);
+            setupPagination();
+            initChart();
+        });
+
+
+        const personalAchievementData = [
+            { id: 1, name: "Nguyễn Văn A", position: "Giảng viên", unit: "P. CNTT & CĐS", achievement: "Thưởng đưa hạng mục vào hoạt động", rewardType: "Tiền mặt", rewardValue: "50,000,000", year: "2023" },
+            { id: 2, name: "Trần Thị B", position: "Nghiên cứu viên", unit: "NM. CĐ3", achievement: "Thành tích đạt được", rewardType: "Giấy khen", rewardValue: "10,000,000", year: "2023" },
+            { id: 3, name: "Lê Văn C", position: "Trưởng phòng", unit: "NM. CĐ1", achievement: "Có đổi mới sáng tạo", rewardType: "Tiền mặt", rewardValue: "30,000,000", year: "2022" },
+            { id: 4, name: "Phạm Thị D", position: "Phó giáo sư", unit: "NM. TKVV", achievement: "Thưởng đưa hạng mục vào hoạt động", rewardType: "Bằng khen", rewardValue: "20,000,000", year: "2023" },
+            { id: 5, name: "Hoàng Văn E", position: "Giáo sư", unit: "NM. HRC1", achievement: "Có đổi mới sáng tạo", rewardType: "Giấy khen", rewardValue: "5,000,000", year: "2021" },
+            { id: 6, name: "Vũ Thị F", position: "Giảng viên", unit: "P. CNTT & CĐS", achievement: "Thưởng đưa hạng mục vào hoạt động", rewardType: "Tiền mặt", rewardValue: "45,000,000", year: "2022" },
+            { id: 7, name: "Đặng Văn G", position: "Nghiên cứu viên", unit: "NM. CĐ3", achievement: "Thành tích đạt được", rewardType: "Bằng khen", rewardValue: "15,000,000", year: "2023" },
+            { id: 8, name: "Bùi Thị H", position: "Trưởng khoa", unit: "NM. CĐ1", achievement: "Có đổi mới sáng tạo", rewardType: "Tiền mặt", rewardValue: "35,000,000", year: "2020" },
+            { id: 9, name: "Nguyễn Thị I", position: "Giảng viên", unit: "NM. TKVV", achievement: "Thưởng đưa hạng mục vào hoạt động", rewardType: "Bằng khen", rewardValue: "25,000,000", year: "2023" },
+            { id: 10, name: "Trần Văn K", position: "Phó trưởng khoa", unit: "NM. HRC1", achievement: "Có đổi mới sáng tạo", rewardType: "Giấy khen", rewardValue: "8,000,000", year: "2022" },
+            { id: 11, name: "Phan Văn L", position: "Giảng viên", unit: "P. CNTT & CĐS", achievement: "Thành tích đạt được", rewardType: "Tiền mặt", rewardValue: "12,000,000", year: "2021" },
+            { id: 12, name: "Lý Thị M", position: "Nghiên cứu viên", unit: "NM. CĐ3", achievement: "Thưởng đưa hạng mục vào hoạt động", rewardType: "Bằng khen", rewardValue: "40,000,000", year: "2023" },
+            { id: 13, name: "Võ Văn N", position: "Trưởng phòng", unit: "NM. CĐ1", achievement: "Có đổi mới sáng tạo", rewardType: "Tiền mặt", rewardValue: "28,000,000", year: "2020" },
+            { id: 14, name: "Đỗ Thị O", position: "Giáo sư", unit: "NM. TKVV", achievement: "Thành tích đạt được", rewardType: "Giấy khen", rewardValue: "18,000,000", year: "2022" },
+            { id: 15, name: "Mai Văn P", position: "Phó giáo sư", unit: "NM. HRC1", achievement: "Thưởng đưa hạng mục vào hoạt động", rewardType: "Tiền mặt", rewardValue: "55,000,000", year: "2023" }
+        ];
+
+        // Hiển thị dữ liệu thành tích cá nhân
+        function displayPersonalAchievementData(page, filters = {}) {
+            const startIndex = (page - 1) * personalItemsPerPage;
+            const endIndex = startIndex + personalItemsPerPage;
+            
+            // Lọc dữ liệu
+            let filteredData = personalAchievementData.filter(item => {
+                let match = true;
+                
+                if (filters.unit && filters.unit !== 'all') {
+                    match = match && (item.unit === filters.unit);
+                }
+                
+                if (filters.achievement && filters.achievement !== 'all') {
+                    match = match && (item.achievement === filters.achievement);
+                }
+                
+                if (filters.year && filters.year !== 'all') {
+                    match = match && (item.year === filters.year);
+                }
+                
+                if (filters.search) {
+                    const searchTerm = filters.search.toLowerCase();
+                    match = match && (
+                        item.name.toLowerCase().includes(searchTerm) || 
+                        item.position.toLowerCase().includes(searchTerm)
+                    );
+                }
+                
+                return match;
+            });
+            
+            const paginatedData = filteredData.slice(startIndex, endIndex);
+            const tbody = document.getElementById('personalAchievementBody');
+            tbody.innerHTML = '';
+
+            paginatedData.forEach((item, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${startIndex + index + 1}</td>
+                    <td>${item.name}</td>
+                    <td>${item.position}</td>
+                    <td>${item.unit}</td>
+                    <td><span class="badge bg-success">${item.achievement}</span></td>
+                    <td>${item.rewardType}</td>
+                    <td>${item.rewardValue}đ</td>
+                    <td>${item.year}</td>
+                `;
+                tbody.appendChild(row);
+            });
+            
+            // Cập nhật phân trang
+            setupPersonalPagination(filteredData.length, page);
+        }
+
+        // Tạo phân trang cho thành tích cá nhân
+        function setupPersonalPagination(totalItems, currentPage) {
+            const totalPages = Math.ceil(totalItems / personalItemsPerPage);
+            const pagination = document.getElementById('personalPagination');
+            pagination.innerHTML = '';
+
+            // Nút Previous
+            const prevLi = document.createElement('li');
+            prevLi.className = `page-item ${currentPage === 1 ? 'disabled' : ''}`;
+            prevLi.innerHTML = `<a class="page-link" href="#" tabindex="-1">Trước</a>`;
+            prevLi.addEventListener('click', (e) => {
+                e.preventDefault();
+                if (personalCurrentPage > 1) {
+                    personalCurrentPage--;
+                    updatePersonalAchievementDisplay();
+                }
+            });
+            pagination.appendChild(prevLi);
+
+            // Các nút trang
+            const maxVisiblePages = 5;
+            let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
+            let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+            
+            if (endPage - startPage + 1 < maxVisiblePages) {
+                startPage = Math.max(1, endPage - maxVisiblePages + 1);
+            }
+            
+            if (startPage > 1) {
+                const li = document.createElement('li');
+                li.className = 'page-item';
+                li.innerHTML = `<a class="page-link" href="#">1</a>`;
+                li.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    personalCurrentPage = 1;
+                    updatePersonalAchievementDisplay();
+                });
+                pagination.appendChild(li);
+                
+                if (startPage > 2) {
+                    const liDots = document.createElement('li');
+                    liDots.className = 'page-item disabled';
+                    liDots.innerHTML = `<span class="page-link">...</span>`;
+                    pagination.appendChild(liDots);
+                }
+            }
+            
+            for (let i = startPage; i <= endPage; i++) {
+                const li = document.createElement('li');
+                li.className = `page-item ${i === currentPage ? 'active' : ''}`;
+                li.innerHTML = `<a class="page-link" href="#">${i}</a>`;
+                li.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    personalCurrentPage = i;
+                    updatePersonalAchievementDisplay();
+                });
+                pagination.appendChild(li);
+            }
+            
+            if (endPage < totalPages) {
+                if (endPage < totalPages - 1) {
+                    const liDots = document.createElement('li');
+                    liDots.className = 'page-item disabled';
+                    liDots.innerHTML = `<span class="page-link">...</span>`;
+                    pagination.appendChild(liDots);
+                }
+                
+                const li = document.createElement('li');
+                li.className = 'page-item';
+                li.innerHTML = `<a class="page-link" href="#">${totalPages}</a>`;
+                li.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    personalCurrentPage = totalPages;
+                    updatePersonalAchievementDisplay();
+                });
+                pagination.appendChild(li);
+            }
+
+            // Nút Next
+            const nextLi = document.createElement('li');
+            nextLi.className = `page-item ${currentPage === totalPages ? 'disabled' : ''}`;
+            nextLi.innerHTML = `<a class="page-link" href="#">Sau</a>`;
+            nextLi.addEventListener('click', (e) => {
+                e.preventDefault();
+                if (personalCurrentPage < totalPages) {
+                    personalCurrentPage++;
+                    updatePersonalAchievementDisplay();
+                }
+            });
+            pagination.appendChild(nextLi);
+        }
+
+        // Cập nhật hiển thị thành tích cá nhân
+        function updatePersonalAchievementDisplay() {
+            const filters = {
+                unit: document.getElementById('personalUnitFilter').value,
+                achievement: document.getElementById('achievementFilter').value,
+                year: document.getElementById('yearFilter').value,
+                search: document.getElementById('searchInput').value
+            };
+            
+            displayPersonalAchievementData(personalCurrentPage, filters);
+        }
+
+        // Xử lý sự kiện thay đổi bộ lọc cá nhân
+        document.getElementById('personalUnitFilter').addEventListener('change', function() {
+            personalCurrentPage = 1;
+            updatePersonalAchievementDisplay();
+        });
+        
+        document.getElementById('achievementFilter').addEventListener('change', function() {
+            personalCurrentPage = 1;
+            updatePersonalAchievementDisplay();
+        });
+        
+        document.getElementById('yearFilter').addEventListener('change', function() {
+            personalCurrentPage = 1;
+            updatePersonalAchievementDisplay();
+        });
+        
+        document.getElementById('searchInput').addEventListener('input', function() {
+            personalCurrentPage = 1;
+            updatePersonalAchievementDisplay();
+        });
+
+        // Khởi tạo
+        document.addEventListener('DOMContentLoaded', () => {
+            displayRankingData(currentPage);
+            setupPagination();
+            initChart();
+            updatePersonalAchievementDisplay();
+        });
+
+    </script>
+
+<script>
+    // Dữ liệu thống kê tổng hợp
+    const statisticsData = {
+        categories: ["Đổi mới sáng tạo", "Thành tích đạt được", "Đưa hạng mục vào hoạt động"],
+        years: ["2021", "2022", "2023"],
+        rewardAmount: {
+            "2021": [120, 180, 90],
+            "2022": [150, 220, 110],
+            "2023": [200, 280, 150],
+            "all": [470, 680, 350]
+        },
+        individualCount: {
+            "2021": [15, 22, 10],
+            "2022": [18, 25, 12],
+            "2023": [25, 32, 18],
+            "all": [58, 79, 40]
+        },
+        teamCount: {
+            "2021": [5, 8, 4],
+            "2022": [6, 10, 5],
+            "2023": [8, 12, 7],
+            "all": [19, 30, 16]
+        },
+        contentCount: {
+            "2021": [8, 12, 6],
+            "2022": [10, 15, 8],
+            "2023": [12, 18, 10],
+            "all": [30, 45, 24]
+        }
+    };
+
+    // Màu sắc cho từng hạng mục
+    const categoryColors = {
+        rewardAmount: 'rgba(54, 162, 235, 0.7)',
+        individualCount: 'rgba(255, 99, 132, 0.7)',
+        teamCount: 'rgba(75, 192, 192, 0.7)',
+        contentCount: 'rgba(153, 102, 255, 0.7)'
+    };
+
+    // Biến lưu trữ biểu đồ
+    let summaryStatisticsChart;
+
+    // Hàm khởi tạo biểu đồ thống kê
+    function initSummaryStatisticsChart(category = "all", year = "2023") {
+        const ctx = document.getElementById('summaryStatisticsChart').getContext('2d');
+        
+        // Xác định dữ liệu hiển thị
+        let datasets = [];
+        let titleText = "";
+        
+        if (category === "all") {
+            // Hiển thị tất cả các hạng mục
+            datasets = [
+                {
+                    label: "Số tiền thưởng (triệu đồng)",
+                    data: statisticsData.rewardAmount[year],
+                    backgroundColor: categoryColors.rewardAmount,
+                    borderColor: categoryColors.rewardAmount.replace('0.7', '1'),
+                    borderWidth: 1
+                },
+                {
+                    label: "Số cá nhân được thưởng",
+                    data: statisticsData.individualCount[year],
+                    backgroundColor: categoryColors.individualCount,
+                    borderColor: categoryColors.individualCount.replace('0.7', '1'),
+                    borderWidth: 1
+                },
+                {
+                    label: "Số tập thể được thưởng",
+                    data: statisticsData.teamCount[year],
+                    backgroundColor: categoryColors.teamCount,
+                    borderColor: categoryColors.teamCount.replace('0.7', '1'),
+                    borderWidth: 1
+                },
+                {
+                    label: "Số nội dung được khen thưởng",
+                    data: statisticsData.contentCount[year],
+                    backgroundColor: categoryColors.contentCount,
+                    borderColor: categoryColors.contentCount.replace('0.7', '1'),
+                    borderWidth: 1
+                }
+            ];
+            titleText = `Thống kê tất cả hạng mục theo loại hình (${year === "all" ? "Tất cả năm" : `Năm ${year}`})`;
+        } else {
+            // Hiển thị 1 hạng mục được chọn
+            let labelText, backgroundColor;
+            
+            switch(category) {
+                case "rewardAmount":
+                    labelText = "Số tiền thưởng (triệu đồng)";
+                    backgroundColor = categoryColors.rewardAmount;
+                    break;
+                case "individualCount":
+                    labelText = "Số cá nhân được thưởng";
+                    backgroundColor = categoryColors.individualCount;
+                    break;
+                case "teamCount":
+                    labelText = "Số tập thể được thưởng";
+                    backgroundColor = categoryColors.teamCount;
+                    break;
+                case "contentCount":
+                    labelText = "Số nội dung được khen thưởng";
+                    backgroundColor = categoryColors.contentCount;
+                    break;
+            }
+            
+            datasets = [{
+                label: labelText,
+                data: statisticsData[category][year],
+                backgroundColor: backgroundColor,
+                borderColor: backgroundColor.replace('0.7', '1'),
+                borderWidth: 1
+            }];
+            
+            titleText = `Thống kê ${labelText.toLowerCase()} theo loại hình (${year === "all" ? "Tất cả năm" : `Năm ${year}`})`;
+        }
+        
+        // Hủy biểu đồ cũ nếu tồn tại
+        if (summaryStatisticsChart) {
+            summaryStatisticsChart.destroy();
+        }
+        
+        // Tạo biểu đồ mới
+        summaryStatisticsChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: statisticsData.categories,
+                datasets: datasets
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: category === "all" ? "Giá trị" : datasets[0].label
+                        }
+                    },
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Loại hình khen thưởng'
+                        }
+                    }
+                },
+                plugins: {
+                    title: {
+                        display: true,
+                        text: titleText,
+                        font: {
+                            size: 16
+                        }
+                    },
+                    legend: {
+                        display: category === "all", // Chỉ hiển thị legend khi chọn "Tất cả hạng mục"
+                        position: 'top'
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return `${context.dataset.label}: ${context.raw}`;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    // Xử lý sự kiện thay đổi bộ lọc
+    document.getElementById('statisticsCategory').addEventListener('change', function() {
+        const selectedCategory = this.value;
+        const selectedYear = document.getElementById('timePeriod').value;
+        initSummaryStatisticsChart(selectedCategory, selectedYear);
+    });
+    
+    document.getElementById('timePeriod').addEventListener('change', function() {
+        const selectedYear = this.value;
+        const selectedCategory = document.getElementById('statisticsCategory').value;
+        initSummaryStatisticsChart(selectedCategory, selectedYear);
+    });
+
+    // Khởi tạo
+    document.addEventListener('DOMContentLoaded', () => {
+        // Các khởi tạo trước giữ nguyên
+        
+        // Khởi tạo biểu đồ thống kê tổng hợp
+        initSummaryStatisticsChart();
+    });
+
+    function scrollToTop() {
+        const element = document.getElementById("home");
+        if (element) {
+            element.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+    }
+</script>
+    
+</body>
+<footer class="site-footer">
+    <div class="container footer-container">
+        <div class="footer-logo-container">
+            <img src="./images/Logo-Gang-thep-Trang.png" alt="Hệ thống khen thưởng" class="footer-logo">
+        </div>
+        
+        <div class="footer-content">
+            <strong>© 2025 Công ty CP Thép Hòa Phát Dung Quất</strong><br>
+            Phát triển bởi Phòng CNTT & CĐS
+        </div>
+        
+        <div class="back-to-top" onclick="scrollToTop()">
+            <i class="fas fa-arrow-up"></i>
+        </div>
+    </div>
+</footer>
+
+</html>
